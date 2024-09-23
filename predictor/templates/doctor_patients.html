@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>My Patients</h2>
+
+    {% if patients %}
+        <div class="list-group">
+            {% for patient in patients %}
+                <a href="{% url 'patient_detail' patient.id %}" class="list-group-item list-group-item-action">
+                    <h5 class="mb-1">{{ patient.user.first_name }} {{ patient.user.last_name }}</h5>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No patients have been assigned to you yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

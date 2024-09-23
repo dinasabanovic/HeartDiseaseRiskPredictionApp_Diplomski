@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+    {% if user.user_type == 'patient' %}
+    <div style="background-color: #f0f8ff; padding: 20px; text-align: center;">
+        <h2 style="font-size: 24px;">Welcome to the Heart Disease Risk Prediction App, {{ user.first_name }}!</h2>
+        <p style="font-size: 16px;">
+            Heart disease is a leading cause of death worldwide, but many of its risk factors can be managed or prevented. This app helps you assess your risk by analyzing various health factors. Understanding your risk is the first step towards a healthier heart. Stay informed and take action today!
+        </p>
+    </div>
+    {% elif user.user_type == 'doctor' %}
+    <div style="background-color: #e6f7ff; padding: 20px; text-align: center;">
+        <h2 style="font-size: 24px;">Welcome, Dr. {{ user.first_name }}!</h2>
+        <p style="font-size: 16px;">
+            As a valued medical professional using our Heart Disease Risk Prediction App, you play a crucial role in enhancing patient care and promoting heart health. Your expertise helps in interpreting risk assessments, offering valuable recommendations, and guiding patients towards effective treatment and prevention strategies.
+        </p>
+        <p style="font-size: 16px;">
+            Here, you can manage patient records, review predictions, and provide recommendations based on the latest data. Your contributions are vital in empowering patients with the knowledge they need to make informed health decisions. Together, we can work towards a healthier future.
+        </p>
+    </div>
+    {% endif %}
+{% else %}
+<div style="background-color: #f0f8ff; padding: 20px; text-align: center;">
+    <h2 style="font-size: 24px;">Welcome to the Heart Disease Risk Prediction App!</h2>
+    <p style="font-size: 16px;">
+        Our app is designed to help both patients and doctors take proactive steps in understanding and managing heart disease risks. If you are a patient, you can use this app to assess your risk factors, learn more about heart health, and take steps towards a healthier life.
+    </p>
+    <p style="font-size: 16px;">
+        For medical professionals, the app provides tools to support your work with patients, including risk assessment insights and the ability to offer personalized recommendations. Join us in our mission to improve heart health outcomes and empower people with the knowledge they need.
+    </p>
+    <p style="font-size: 16px;">
+        Please log in or sign up to start using the app.
+    </p>
+</div>
+{% endif %}
+{% endblock %}
+

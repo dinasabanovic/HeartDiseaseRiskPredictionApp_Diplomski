@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title">Patient Profile: {{ profile.user.first_name }} {{ profile.user.last_name }}</h2>
+                    
+                    {% if profile %}
+                        <p><strong>Email:</strong> {{ profile.user.email }}</p>
+                        <p><strong>Date of Birth:</strong> {{ profile.date_of_birth }}</p>
+                    {% else %}
+                        <p>No profile information available.</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% if request.user.user_type == 'doctor' %}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3 class="card-title">Add recommendation</h3>
+                    <a href="{% url 'add_recommendation' patient_id=profile.id %}" class="btn btn-primary">Add a recommendation for this patient</a>
+                </div>
+            </div>
+            {% endif %}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3 class="card-title">Recommendations</h3>
+                    {% if recommendations %}
+                        <ul class="list-group">
+                            {% for recommendation in recommendations %}
+                                <li class="list-group-item">
+                                    <p>{{ recommendation.content }}</p>
+                                    <small class="text-muted">Posted on {{ recommendation.created_at|date:"F j, Y, g:i a" }} by Dr. {{ recommendation.doctor.user.first_name }} {{ recommendation.doctor.user.last_name }}</small>
+                                    {% if request.user.user_type == 'doctor' and recommendation.doctor == request.user.doctor %}
+                                    <a href="{% url 'delete_recommendation' recommendation_id=recommendation.id %}" class="btn btn-danger btn-sm float-right ml-2" onclick="return confirm('Are you sure you want to delete this recommendation?');">Delete</a>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>No recommendations available.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3 class="card-title">Predictions</h3>
+                    {% if predictions %}
+                        <h4>Latest Prediction</h4>
+                        <p><strong>Risk:</strong> You {{ predictions.0.heart_disease_risk }} risk of heart disease.</p>
+                        <p><strong>Date:</strong> {{ predictions.0.prediction_date|date:"F j, Y, g:i a" }}</p>
+                        <h4>Input Data:</h4>
+                        <ul class="list-group mb-3">
+                            <li class="list-group-item"><strong>Age:</strong> {{ predictions.0.age }}</li>
+                            <li class="list-group-item"><strong>Gender:</strong> {{ predictions.0.gender }}</li>
+                            <li class="list-group-item"><strong>Chest Pain Type:</strong> {{ predictions.0.chest_pain_type }}</li>
+                            <li class="list-group-item"><strong>Resting Blood Pressure:</strong> {{ predictions.0.restingbp }}</li>
+                            <li class="list-group-item"><strong>Cholesterol [mm/dl]:</strong> {{ predictions.0.cholesterol }}</li>
+                            <li class="list-group-item"><strong>Fasting Blood Sugar:</strong> {{ predictions.0.fastingbs }}</li>
+                            <li class="list-group-item"><strong>Resting ECG:</strong> {{ predictions.0.restingecg }}</li>
+                            <li class="list-group-item"><strong>Max Heart Rate:</strong> {{ predictions.0.maxhr }}</li>
+                            <li class="list-group-item"><strong>Exercise Induced Angina:</strong> {{ predictions.0.exerciseangina }}</li>
+                            <li class="list-group-item"><strong>Oldpeak:</strong> {{ predictions.0.oldpeak }}</li>
+                            <li class="list-group-item"><strong>Slope:</strong> {{ predictions.0.st_slope }}</li>
+                        </ul>
+
+                        <div class="accordion" id="predictionsAccordion">
+                            {% for prediction in predictions|slice:"1:" %}
+                                <div class="card">
+                                    <div class="card-header" id="heading{{ forloop.counter }}">
+                                        <h2 class="mb-0">
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse{{ forloop.counter }}" aria-expanded="false" aria-controls="collapse{{ forloop.counter }}">
+                                                Prediction on {{ prediction.prediction_date|date:"F j, Y, g:i a" }}
+                                            </button>
+                                        </h2>
+                                    </div>
+
+                                    <div id="collapse{{ forloop.counter }}" class="collapse" aria-labelledby="heading{{ forloop.counter }}" data-parent="#predictionsAccordion">
+                                        <div class="card-body">
+                                            <p><strong>Result:</strong> You {{ prediction.heart_disease_risk }} risk of heart disease.</p>
+                                            <h4>Input Data:</h4>
+                                            <ul class="list-group">
+                                                <li class="list-group-item"><strong>Age:</strong> {{ prediction.age }}</li>
+                                                <li class="list-group-item"><strong>Gender:</strong> {{ prediction.gender }}</li>
+                                                <li class="list-group-item"><strong>Chest Pain Type:</strong> {{ prediction.chest_pain_type }}</li>
+                                                <li class="list-group-item"><strong>Resting Blood Pressure:</strong> {{ prediction.restingbp }}</li>
+                                                <li class="list-group-item"><strong>Cholesterol [mm/dl]:</strong> {{ prediction.cholesterol }}</li>
+                                                <li class="list-group-item"><strong>Fasting Blood Sugar:</strong> {{ prediction.fastingbs }}</li>
+                                                <li class="list-group-item"><strong>Resting ECG:</strong> {{ prediction.restingecg }}</li>
+                                                <li class="list-group-item"><strong>Max Heart Rate:</strong> {{ prediction.maxhr }}</li>
+                                                <li class="list-group-item"><strong>Exercise Induced Angina:</strong> {{ prediction.exerciseangina }}</li>
+                                                <li class="list-group-item"><strong>Oldpeak:</strong> {{ prediction.oldpeak }}</li>
+                                                <li class="list-group-item"><strong>Slope:</strong> {{ prediction.st_slope }}</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>No predictions available.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
