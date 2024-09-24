@@ -10,10 +10,6 @@
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 
-{% if context %}
-    <h3>Prediction Result: You {{ context }} heart disease.</h3>
-{% endif %}
-
 {% if accuracy %}
     <p><strong>Model Accuracy:</strong> {{ accuracy|floatformat:2 }}%</p>
 {% endif %}
