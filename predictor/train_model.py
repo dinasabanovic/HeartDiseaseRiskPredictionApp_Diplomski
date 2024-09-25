@@ -43,18 +43,13 @@ scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X_poly)
 X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
 
-rf = RandomForestClassifier(random_state=42)
-
-param_grid = {
-    'n_estimators': [100, 200, 300],
-    'max_depth': [10, 15, 20],
-    'min_samples_split': [2, 5, 10]
-}
-
-grid_search = GridSearchCV(rf, param_grid, cv=5, scoring='accuracy', 
-                           n_jobs=-1, verbose=2)
-grid_search.fit(X_train, y_train)
-best_rf = grid_search.best_estimator_
+best_rf = RandomForestClassifier(
+    n_estimators=200, 
+    max_depth=15,   
+    min_samples_split=2,  
+    random_state=42
+)
+best_rf.fit(X_train, y_train)
 y_pred = best_rf.predict(X_test)
 
 accuracy = accuracy_score(y_test, y_pred) * 100
