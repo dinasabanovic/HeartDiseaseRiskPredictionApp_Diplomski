@@ -46,35 +46,7 @@ def preprocessing(df, is_training=True, label_encoders=None):
                 df[col] = label_encoders[col].transform(df[col])
         
         return df
-
-def load_and_preprocess_data():
-    df = pd.read_csv('static/heart.csv')  
-    X, y, label_encoders = preprocessing(df, is_training=True)
-    
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
-    
-    # Initialize and train the model
-    rf = RandomForestClassifier(random_state=42)
-    param_grid = {
-        'n_estimators': [50, 100, 150],
-        'max_depth': [None, 10, 20, 30],
-        'min_samples_split': [2, 5, 10],
-        'min_samples_leaf': [1, 2, 4]
-    }
-    
-    grid_search = GridSearchCV(estimator=rf, param_grid=param_grid, cv=5, scoring='accuracy', n_jobs=-1, verbose=2)
-    grid_search.fit(X_train, y_train)
-    
-    best_rf = grid_search.best_estimator_
-
-    y_pred = best_rf.predict(X_test)
-    
-    accuracy = accuracy_score(y_test, y_pred) * 100
-    print(f"Model accuracy: {accuracy}%")
-    print(classification_report(y_test, y_pred))
-
-    return best_rf, X_train, label_encoders, accuracy
-
+        
 
 def get_recommendations(latest_prediction):
     recommendations = []
